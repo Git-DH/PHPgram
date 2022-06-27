@@ -18,8 +18,13 @@ class UserController extends Controller
                 if (!$dbuser || !password_verify($pw, $dbuser->pw)) {
                     return "redirect:signin?email={$email}&err";
                 }
-                $_SESSION[_LOGINUSER] = $dbuser;
-
+                $dbuser->pw = null;
+                $dbuser->regdt = null;
+                // 메모리 사용을 줄이기 위해 pw, regdt와 같이 필요없는 자료를 처리한다.
+                $this->flash(_LOGINUSER, $dbuser);
+                // session사용 이유 
+                // 스코프(생존시간)가 길다-> 브라우저를 키고 끄는 순간 까지는 살아 있다.
+                // 로그인 뿐만 아니라 다른화면으로 값을 이동하는 것에도 사용한다.
                 return "redirect:/feed/index";
         }
     }
@@ -39,5 +44,10 @@ class UserController extends Controller
                 $this->model->insUser($param);
                 return "redirect:signin";
         }
+    }
+
+    public function logout() {
+        $this->flash(_LOGINUSER);
+        return "redirect:/user/signin";
     }
 }
