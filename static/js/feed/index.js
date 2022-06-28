@@ -4,6 +4,7 @@
         const modal = document.querySelector('#newFeedModal');
         const body =  modal.querySelector('#id-modal-body');
         const frmElem = modal.querySelector('form');
+        const btnClose = modal.querySelector('.btn-close');
 
         //이미지 값이 변하면
         frmElem.imgs.addEventListener('change', function(e) {
@@ -38,25 +39,31 @@
                     const files = frmElem.imgs.files;
 
                     const fData = new FormData();
+                    // FormData(): form태그를 새로 만들어 주는 역할
                     // ajax로 데이터를 보낼땐 formdata가 필요하다.
                     for(let i=0; i<files.length; i++) {
-                        fData.append('imgs', files[i]);
+                        fData.append('imgs[]', files[i]);
                     }
                     fData.append('ctnt', body.querySelector('textarea').value);
                     fData.append('location', body.querySelector('input[type=text]').value);
 
-                    fetch('/feed/reg', {
+                    fetch('/feed/rest', {
                         method: 'post',
                         body: fData
+                        // fetch에서 데이터를 담는 body
                     }).then(res => res.json())
                         .then(myJson => {
+                            console.log(myJson);
 
-                            const closeBtn = modal.querySelector('.btn-close');
-                            closeBtn.click();
-
-                            if(feedObj && myJson.result) {
-                                feedObj.refreshList();
+                            if(myJson.result) {
+                                btnClose.click();
                             }
+                            // const closeBtn = modal.querySelector('.btn-close');
+                            // closeBtn.click();
+
+                            // if(feedObj && myJson.result) {
+                            //     feedObj.refreshList();
+                            // }
                         });
                 });
             }
@@ -64,7 +71,8 @@
 
         btnNewFeedModal.addEventListener('click', function() {
             const selFromComBtn = document.createElement('button');
-            selFromComBtn.type = 'button';
+            selFromComBtn.type = 'button'; 
+            // 기본 설정이 submit으로 돼있어서 새로 타입을 설정해 줌
             selFromComBtn.className = 'btn btn-primary';
             selFromComBtn.innerText = '컴퓨터에서 선택';
             selFromComBtn.addEventListener('click', function() {

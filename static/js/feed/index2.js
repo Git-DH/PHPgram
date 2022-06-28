@@ -1,12 +1,12 @@
-(function() {
+(function () {
     const btnNewFeedModal = document.querySelector('#btnNewFeedModal');
-    if(btnNewFeedModal) {
+    if (btnNewFeedModal) {
         const modal = doucument.querySelector('#newFeedMadal');
         const body = modal.querySelector('id-modal-body');
         const frmElem = modal.querySelector('form');
 
-        frmElem.imgs.addEventListener('change', function(e) {
-            if(e.target.files.length > 0) {
+        frmElem.imgs.addEventListener('change', function (e) {
+            if (e.target.files.length > 0) {
                 body.innerHTML = `
                 <div>
                     <div class="d-flex flex-md-row">
@@ -21,28 +21,40 @@
                     <button type="button" class="btn btn-primary">공유하기</button>
                 </div>
             `;
-            const imgElem = body.querySelector('#id-img');
+                const imgElem = body.querySelector('#id-img');
 
-            const imgSource = e.target.files[0];
-            const reader = new FileReader();
-            reader.readAsDataURL(imgSource);
-            reader.onload = function() {
-                imgElem.src = reader.result;
-            };
+                const imgSource = e.target.files[0];
+                const reader = new FileReader();
+                reader.readAsDataURL(imgSource);
+                reader.onload = function () {
+                    imgElem.src = reader.result;
+                };
 
-            const shareBtnElem = body.querySelector('button');
-            shareBtnElem.addEventListener('click', function() {
-                const files = frmElem.imgs.files;
+                const shareBtnElem = body.querySelector('button');
+                shareBtnElem.addEventListener('click', function () {
+                    const files = frmElem.imgs.files;
 
-                const fData = new FormData();
-                for(let i=0; i<files.length; i++) {
-                    fData.append('imgs', files[i]);
-                }
-                fData.append('ctnt', body.querySelector('textarea').value);
-                fData.append('location', body.querySelector('input[type=text]').value);
+                    const fData = new FormData();
+                    for (let i = 0; i < files.length; i++) {
+                        fData.append('imgs', files[i]);
+                    }
+                    fData.append('ctnt', body.querySelector('textarea').value);
+                    fData.append('location', body.querySelector('input[type=text]').value);
 
-                
-            });
+                    fetch('/feed/reg', {
+                        method: 'post',
+                        body: fData
+                    }).then(res => res.json())
+                        .then(myJson => {
+
+                            const closeBtn = modal.querySelector('.btn-close');
+                            closeBtn.click();
+
+                            if (feedObj && myJson.result) {
+                                feedObj.refreshList();
+                            }
+                        });
+                });
             }
         })
     }
