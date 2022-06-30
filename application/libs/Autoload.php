@@ -1,7 +1,7 @@
 <?php
-    spl_autoload_register(function ($path) {
+    spl_autoload_register(function ($path) {      
         $path = str_replace('\\','/',$path);
-        $paths = explode('/', $path);
+        $paths = explode('/', $path);        
         if (preg_match('/model/', strtolower($paths[1]))) {
             $className = 'models';
         } else if (preg_match('/controller/',strtolower($paths[1]))) {

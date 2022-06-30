@@ -1,3 +1,5 @@
+create database phpgram;
+
 CREATE TABLE t_user(
    iuser INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
    email VARCHAR(50) NOT NULL,   
@@ -10,20 +12,20 @@ CREATE TABLE t_user(
 );
 
 CREATE TABLE `t_user_follow` (
-   `fromiuser` INT UNSIGNED NOT NULL,
-   `toiuser` INT UNSIGNED NOT NULL,
-   `regdt` DATETIME NULL DEFAULT current_timestamp(),
-   PRIMARY KEY (`fromiuser`, `toiuser`) USING BTREE,
-   FOREIGN KEY (`fromiuser`) REFERENCES `t_user` (`iuser`),
-   FOREIGN KEY (`toiuser`) REFERENCES `t_user` (`iuser`)
+    `fromiuser` INT UNSIGNED NOT NULL,
+    `toiuser` INT UNSIGNED NOT NULL,
+    `regdt` DATETIME NULL DEFAULT current_timestamp(),
+    PRIMARY KEY (`fromiuser`, `toiuser`) USING BTREE,
+    FOREIGN KEY (`fromiuser`) REFERENCES `t_user` (`iuser`),
+    FOREIGN KEY (`toiuser`) REFERENCES `t_user` (`iuser`)
 );
 
 CREATE TABLE `t_user_img` (
-   `iuser` INT(20) UNSIGNED NOT NULL,
-   `img` VARCHAR(50) NOT NULL,
-   `regdt` DATETIME NULL DEFAULT current_timestamp(),
-   PRIMARY KEY (`iuser`, `img`),
-   FOREIGN KEY (`iuser`) REFERENCES `t_user` (`iuser`)
+    `iuser` INT(20) UNSIGNED NOT NULL,
+    `img` VARCHAR(50) NOT NULL,
+    `regdt` DATETIME NULL DEFAULT current_timestamp(),
+    PRIMARY KEY (`iuser`, `img`),
+    FOREIGN KEY (`iuser`) REFERENCES `t_user` (`iuser`)
 );
 
 CREATE TABLE t_feed(
@@ -62,27 +64,27 @@ CREATE TABLE t_feed_fav(
 );
 
 CREATE TABLE t_dm(
-   idm INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-   regdt DATETIME DEFAULT NOW(),
-   lastmsg VARCHAR(200) NOT NULL,
-   lastdt DATETIME DEFAULT NOW()
+    idm INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    regdt DATETIME DEFAULT NOW(),
+    lastmsg VARCHAR(200) NOT NULL,
+    lastdt DATETIME DEFAULT NOW()
 );
 
 CREATE TABLE t_dm_user(
-   idm INT UNSIGNED,
-   iuser INT UNSIGNED,
-   PRIMARY KEY(idm, iuser),
-   FOREIGN KEY(idm) REFERENCES t_dm(idm),
-   FOREIGN KEY(iuser) REFERENCES t_user(iuser)
+    idm INT UNSIGNED,
+    iuser INT UNSIGNED,
+    PRIMARY KEY(idm, iuser),
+    FOREIGN KEY(idm) REFERENCES t_dm(idm),
+    FOREIGN KEY(iuser) REFERENCES t_user(iuser)
 );
 
 CREATE TABLE t_dm_msg(
-   idm INT UNSIGNED,
-   seq INT UNSIGNED,
-   iuser INT UNSIGNED,
-   msg VARCHAR(200) NOT NULL,
-   regdt DATETIME DEFAULT NOW(),
-   PRIMARY KEY(idm, seq),
-   FOREIGN KEY(idm) REFERENCES t_dm(idm),
-   FOREIGN KEY(iuser) REFERENCES t_user(iuser)
-)
+     idm INT UNSIGNED,
+     seq INT UNSIGNED,
+     iuser INT UNSIGNED,
+     msg VARCHAR(200) NOT NULL,
+     regdt DATETIME DEFAULT NOW(),
+     PRIMARY KEY(idm, seq),
+     FOREIGN KEY(idm) REFERENCES t_dm(idm),
+     FOREIGN KEY(iuser) REFERENCES t_user(iuser)
+);

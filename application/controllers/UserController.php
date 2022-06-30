@@ -1,47 +1,46 @@
 <?php
-
 namespace application\controllers;
 
-class UserController extends Controller
-{
-    public function signin()
-    {
-        switch (getMethod()) {
+class UserController extends Controller {
+
+    //로그인
+    public function signin() {        
+        switch(getMethod()) {
             case _GET:
                 return "user/signin.php";
             case _POST:
                 $email = $_POST["email"];
                 $pw = $_POST["pw"];
-                $param = ["email" => $email];
-                $dbuser = $this->model->selUser($param);
-
-                if (!$dbuser || !password_verify($pw, $dbuser->pw)) {
+                $param = [ "email" => $email ];
+                $dbUser = $this->model->selUser($param);
+                if(!$dbUser || !password_verify($pw, $dbUser->pw)) {                                                        
                     return "redirect:signin?email={$email}&err";
                 }
-                $dbuser->pw = null;
-                $dbuser->regdt = null;
-                // 메모리 사용을 줄이기 위해 pw, regdt와 같이 필요없는 자료를 처리한다.
-                $this->flash(_LOGINUSER, $dbuser);
-                // session사용 이유 
-                // 스코프(생존시간)가 길다-> 브라우저를 키고 끄는 순간 까지는 살아 있다.
-                // 로그인 뿐만 아니라 다른화면으로 값을 이동하는 것에도 사용한다.
+                $dbUser->pw = null;
+                $dbUser->regdt = null;
+                $this->flash(_LOGINUSER, $dbUser);
                 return "redirect:/feed/index";
-        }
+            }
     }
 
-    public function signup()
-    {
-        switch (getMethod()) {
+    //회원가입
+    public function signup() {
+        switch(getMethod()) {
             case _GET:
                 return "user/signup.php";
             case _POST:
+                $email = $_POST["email"];
+                $pw = $_POST["pw"];
+                $hashedPw = password_hash($pw, PASSWORD_BCRYPT);
+                $nm = $_POST["nm"];
                 $param = [
-                    "email" => $_POST["email"],
-                    "pw" => $_POST["pw"],
-                    "nm" => $_POST["nm"],
+                    "email" => $email,
+                    "pw" => $hashedPw,
+                    "nm" => $nm
                 ];
-                $param["pw"] = password_hash($param["pw"], PASSWORD_BCRYPT);
+
                 $this->model->insUser($param);
+
                 return "redirect:signin";
         }
     }
@@ -49,5 +48,15 @@ class UserController extends Controller
     public function logout() {
         $this->flash(_LOGINUSER);
         return "redirect:/user/signin";
+    }
+
+    public function feedwin() {
+        $iuser = isset($_GET["iuser"]) ? intval($_GET["iuser"]) : 0;
+        $param = [ "iuser" => $iuser ];
+        $this->addAttribute(_DATA, $this->model->selUserByIuser($param));
+        $this->addAttribute(_JS, ["user/feedwin", "https://unpkg.com/swiper@8/swiper-bundle.min.js"]);        
+        $this->addAttribute(_CSS, ["user/feedwin", "https://unpkg.com/swiper@8/swiper-bundle.min.css"]);        
+        $this->addAttribute(_MAIN, $this->getView("user/feedwin.php"));
+        return "template/t1.php"; 
     }
 }

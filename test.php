@@ -1,5 +1,6 @@
 <?php
-include_once "application/utils/FileUtils.php";
-// $result = getExt("asfasdfasdf.jpg");
-$result = getRandomFileNm("asfasdfasdf.jpg");
+require_once "application/utils/FileUtils.php";
+
+$result = getRandomFileNm("aaaa_asdfsaf.sdfsdf.png");
+
 print $result;

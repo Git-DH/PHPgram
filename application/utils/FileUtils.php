@@ -4,10 +4,14 @@ function getRandomFileNm($fileName) {
 }
 
 function getExt($fileName) {
-    // $arr = explode(".", $fileName);
-    // return end($arr); 
     return pathinfo($fileName, PATHINFO_EXTENSION);
+    /*
+    $arr = explode(".", $fileName);    
+    return end($arr);
+    */
+    //return substr($fileName, strrpos($fileName, ".") + 1);
 }
+
 function gen_uuid_v4() { 
     return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x'
         , mt_rand(0, 0xffff)

@@ -21,6 +21,7 @@
     define("_LIST", "list");
     define("_DATA", "data");
     define("_ITEM", "item");
+    define("_RESULT", "result");
 
     define("_POST", "POST");
     define("_GET", "GET");
@@ -29,3 +30,4 @@
 
     define("_IMG_PATH", "static/img");
     define("_FEED_ITEM_CNT", 20);
+    

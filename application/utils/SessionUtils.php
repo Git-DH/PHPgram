@@ -9,6 +9,6 @@
         return getLoginUser()->iuser;
     }
 
-    function getMainImgSrc(){
-        return getIuser(). "/" .getLoginUser()->mainimg;
+    function getMainImgSrc() {
+        return getIuser() . "/" . getLoginUser()->mainimg;
     }
