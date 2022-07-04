@@ -1,4 +1,8 @@
 <?php
+    function getJson() {
+        return json_decode(file_get_contents('php://input'), true);
+        // php에서 json쓸 때 쓰는 거
+    }
 
     function getParam($key) {
         return isset($_GET[$key]) ? $_GET[$key] : "";
