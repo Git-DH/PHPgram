@@ -83,6 +83,8 @@ class UserController extends Controller
             $list = $this->model->selFeedList($param);
             foreach ($list as $item) {
                 $item->imgList = Application::getModel("feed")->selFeedImgList($item);
+                $param2 = ["ifeed" => $item->ifeed]; // 댓글 창 보여 주는 부분
+                $item->cmt = Application::getModel("feedcmt")->selFeedCmt($param2);
             }
             return $list;
         }
