@@ -21,11 +21,11 @@ getFeedList();
 
 (function () {
     const btnFollow = document.querySelector('#btnFollow');
-    const gData = document.querySelector('#gData');
+    const lData = document.querySelector('#lData');
     if(btnFollow) {
         btnFollow.addEventListener('click', function() {
             const param = {
-                toiuser: gData.dataset.toiuser
+                toiuser: parseInt(lData.dataset.toiuser)
             };
             console.log(param);
             const follow = btnFollow.dataset.follow;

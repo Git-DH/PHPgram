@@ -78,12 +78,13 @@ class UserController extends Controller
             $startIdx = ($page - 1) * _FEED_ITEM_CNT;
             $param = [
                 "startIdx" => $startIdx,
-                "iuser" => $_GET["iuser"]
+                "toiuser" => $_GET["iuser"],
+                "loginiuser" => getIuser()
             ];
             $list = $this->model->selFeedList($param);
             foreach ($list as $item) {
-                $item->imgList = Application::getModel("feed")->selFeedImgList($item);
                 $param2 = ["ifeed" => $item->ifeed]; // 댓글 창 보여 주는 부분
+                $item->imgList = Application::getModel("feed")->selFeedImgList($param2);
                 $item->cmt = Application::getModel("feedcmt")->selFeedCmt($param2);
             }
             return $list;

@@ -1,13 +1,9 @@
 <?php
-
 namespace application\models;
-
 use PDO;
 
-class FeedModel extends Model
-{
-    public function insFeed(&$param)
-    {
+class FeedModel extends Model {
+    public function insFeed(&$param) {
         $sql = "INSERT INTO t_feed
                 (location, ctnt, iuser)
                 VALUES
@@ -20,21 +16,19 @@ class FeedModel extends Model
         return intval($this->pdo->lastInsertId());
     }
 
-    public function insFeedImg(&$param)
-    {
+    public function insFeedImg(&$param) {
         $sql = "INSERT INTO t_feed_img
                 (ifeed, img)
                 VALUES
                 (:ifeed, :img)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":ifeed", $param["ifeed"]);
-        $stmt->bindValue(":img", $param["img"]);
+        $stmt->bindValue(":img", $param["img"]);        
         $stmt->execute();
         return $stmt->rowCount();
     }
 
-    public function selFeedList(&$param)
-    {
+    public function selFeedList(&$param) {
         $sql = "SELECT A.ifeed, A.location, A.ctnt, A.iuser, A.regdt
                     , C.nm AS writer, C.mainimg
                     , IFNULL(E.cnt, 0) AS favCnt
@@ -63,7 +57,7 @@ class FeedModel extends Model
         $stmt->bindValue(":startIdx", $param["startIdx"]);
         $stmt->bindValue(":feedItemCnt", _FEED_ITEM_CNT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);        
     }
 
     public function selFeedAfterReg(&$param) {
@@ -73,32 +67,30 @@ class FeedModel extends Model
                     , 0 AS isFav
                 FROM t_feed A
                 INNER JOIN t_user C
-                ON A.iuser = C.iuser
+                ON A.iuser = C.iuser               
                 WHERE A.ifeed = :ifeed
                 ORDER BY A.ifeed DESC";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":ifeed", $param["ifeed"]);
+        $stmt->bindValue(":ifeed", $param["ifeed"]);             
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ); 
+        return $stmt->fetch(PDO::FETCH_OBJ);        
     }
 
-    public function selFeedImgList($param)
-    {
+    public function selFeedImgList($param) {
         $sql = "SELECT img FROM t_feed_img 
                 WHERE ifeed = :ifeed";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":ifeed", $param->ifeed);
+        $stmt->bindValue(":ifeed", $param["ifeed"]);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);        
     }
 
-    // ------------ Fav -------------- //
-    public function insFeedFav(&$param)
-    {
+    //------------------------------- Fav ----------------------//
+    public function insFeedFav(&$param) {
         $sql = "INSERT INTO t_feed_fav
-                (ifeed, iuser)
-                VALUES
-                (:ifeed, :iuser)";
+        (ifeed, iuser)
+        VALUES
+        (:ifeed, :iuser)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":ifeed", $param["ifeed"]);
         $stmt->bindValue(":iuser", $param["iuser"]);
@@ -106,13 +98,17 @@ class FeedModel extends Model
         return $stmt->rowCount();
     }
 
-    public function delFeedFav(&$param)
-    {
-        $sql = "DELETE FROM t_feed_fav WHERE ifeed = :ifeed AND iuser = :iuser";
+    public function delFeedFav(&$param) {
+        $sql = "DELETE FROM t_feed_fav
+                WHERE ifeed = :ifeed
+                AND iuser = :iuser";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":ifeed", $param["ifeed"]);
         $stmt->bindValue(":iuser", $param["iuser"]);
         $stmt->execute();
-        return $stmt->rowCount(); // 영향을 미친 값을 리턴함
+        return $stmt->rowCount();
     }
+
+    
+
 }
