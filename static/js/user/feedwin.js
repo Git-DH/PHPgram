@@ -1,5 +1,3 @@
-
-
 if(feedObj) {
     const url = new URL(location.href);
     feedObj.iuser = parseInt(url.searchParams.get('iuser'));

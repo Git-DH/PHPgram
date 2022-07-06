@@ -1,11 +1,28 @@
 const feedObj = { // 멤버필드
-    limit: 20,
+    limit: 10,
     itemLength: 0,
     currentPage: 1,
     swiper: null,
     getFeedUrl: '',
     iuser: 0,
+    setScrollInfinity: function() { // 인피니티 스크롤
+        window.addEventListener('scroll', e => {
+            if(this.isLoading) {return;}
+            const { // 구조 분할 할당
+                scrollTop,
+                scrollHeight,
+                clientHeight
+            } = document.documentElement;
+
+            if( scrollTop + clientHeight >= scrollHeight - 10 && this.itemLength === this.limit ) {
+                // 인피니티 스크롤 반응 기준 && itemlength 와 limit의 개수가 같아야 다음 페이지 존재가 있다는 걸 안다.
+                this.getFeedList();
+            }
+
+        }, {passive: true});
+    },
     getFeedList: function () {
+        this.itemLength = 0;
         this.showLoading();
         const param = {
             page: this.currentPage++,
@@ -14,6 +31,7 @@ const feedObj = { // 멤버필드
         fetch(this.getFeedUrl + encodeQueryString(param))
             .then(res => res.json())
             .then(list => {
+                this.itemLength = list.length;
                 this.makeFeedList(list);
             })
             .catch(e => {
@@ -256,7 +274,8 @@ const feedObj = { // 멤버필드
     },
 
     showLoading: function () { this.loadingElem.classList.remove('d-none'); },
-    hideLoading: function () { this.loadingElem.classList.add('d-none'); }
+    hideLoading: function () { this.loadingElem.classList.add('d-none'); },
+    isLoading: function() { return !this.loadingElem.classList.contains('d-none')}
 
 }
 
@@ -326,6 +345,11 @@ function moveToFeedWin(iuser) {
                                 const gData = document.querySelector('#gData');
                                 if (lData && lData.dataset.toiuser !== gData.dataset.loginiuser) { return; }
                                 // 남의 feedWin이 아니라면 화면에 등록!!
+
+                                const feedItem = feedObj.makeFeedItem(myJson);
+                                feedObj.containerElem.prepend(feedItem);
+                                feedObj.refreshSwipe();
+                                window.scrollTo(0, 0);
                             }
                         });
 
