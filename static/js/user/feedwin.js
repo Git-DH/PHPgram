@@ -30,6 +30,8 @@ getFeedList();
     const spanCntFollower = document.querySelector('#spanCntFollower')
     const btnFollow = document.querySelector('#btnFollow');
     const lData = document.querySelector('#lData');
+    const btnDelCurrentProfilePic = document.querySelector('#btnDelCurrentProfilePic');
+    const btnProfileImgModalClose = document.querySelector('#btnProfileImgModalClose');
     if(btnFollow) {
         btnFollow.addEventListener('click', function() {
             const param = {
@@ -82,6 +84,28 @@ getFeedList();
                 });
                     break;
             }
+        })
+    }
+
+    if(btnDelCurrentProfilePic) {
+        btnDelCurrentProfilePic.addEventListener('click', e => {
+
+        });
+    }
+
+    if(btnDelCurrentProfilePic) {
+        btnDelCurrentProfilePic.addEventListener('click', e => {
+            fetch('/user/profile', {method: 'DELETE'})
+            .then(res => res.json())
+            .then(res => {
+                if(res.result) {
+                    const profileimgList = document.querySelectorAll('.profileimg');
+                    profileimgList.forEach(item => {
+                        item.src = '/static/img/profile/defaultProfileImg_100.png';
+                    });
+                }
+                btnProfileImgModalClose.click();
+            })
         })
     }
 })()

@@ -17,6 +17,7 @@
 
     function getMethod() {        
         return $_SERVER['REQUEST_METHOD'];
+        // get, post에 상관없이 다 받는 거
     }
 
     function isGetOne() {

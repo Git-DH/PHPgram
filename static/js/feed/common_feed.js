@@ -7,7 +7,7 @@ const feedObj = { // 멤버필드
     iuser: 0,
     setScrollInfinity: function() { // 인피니티 스크롤
         window.addEventListener('scroll', e => {
-            if(this.isLoading) {return;}
+            if(this.isLoading()) {return;}
             const { // 구조 분할 할당
                 scrollTop,
                 scrollHeight,
@@ -74,7 +74,7 @@ const feedObj = { // 멤버필드
         const src = '/static/img/profile/' + (item.writerimg ? `${item.iuser}/${item.writerimg}` : 'defaultProfileImg_100.png');
         divCmtItemContainer.innerHTML = `
             <div class="circleimg h24 w24 me-1">
-                <img src="${src}" class="profile w24 pointer">                
+                <img src="${src}" class="profile w24 pointer profileimg">                
             </div>
             <div class="d-flex flex-row">
                 <div class="pointer me-2">${item.writer} - <span class="rem0_8">${getDateTimeInfo(item.regdt)}</span></div>
@@ -107,7 +107,7 @@ const feedObj = { // 멤버필드
 
         const regDtInfo = getDateTimeInfo(item.regdt);
         divTop.className = 'd-flex flex-row ps-3 pe-3';
-        const writerImg = `<img src='/static/img/profile/${item.iuser}/${item.mainimg}' 
+        const writerImg = `<img class="profileimg" src='/static/img/profile/${item.iuser}/${item.mainimg}' 
             onerror='this.error=null;this.src="/static/img/profile/defaultProfileImg_100.png"'>`;
 
         divTop.innerHTML = `
@@ -173,9 +173,19 @@ const feedObj = { // 멤버필드
                         if (item.isFav === 0) { // 좋아요 취소
                             heartIcon.classList.remove('fas');
                             heartIcon.classList.add('far');
+                            item.favCnt--;
+                            spanFavCnt.innerHTML = `좋아요 ${item.favCnt}개`;
+                            if(item.favCnt === 0) {
+                                divFav.classList.add('d-none');
+                            }
                         } else { // 좋아요 처리
                             heartIcon.classList.remove('far');
                             heartIcon.classList.add('fas');
+                            item.favCnt++;
+                            spanFavCnt.innerHTML = `좋아요 ${item.favCnt}개`;
+                            if(item.favCnt > 0) {
+                                divFav.classList.remove('d-none');
+                            }
                         }
                     } else {
                         alert('좋아요를 할 수 없습니다.');
@@ -199,6 +209,7 @@ const feedObj = { // 멤버필드
         divFav.appendChild(spanFavCnt);
         spanFavCnt.className = 'bold';
         spanFavCnt.innerHTML = `좋아요 ${item.favCnt}개`;
+        
 
         if (item.favCnt > 0) { divFav.classList.remove('d-none'); }
 
