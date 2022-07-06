@@ -1,10 +1,28 @@
-const feedObj = {
+const feedObj = { // 멤버필드
     limit: 20,
     itemLength: 0,
     currentPage: 1,
     swiper: null,
-    refreshSwipe: function() {
-        if(this.swiper !== null) { this.swiper = null; }
+    getFeedUrl: '',
+    iuser: 0,
+    getFeedList: function () {
+        this.showLoading();
+        const param = {
+            page: this.currentPage++,
+            iuser: this.iuser
+        }
+        fetch(this.getFeedUrl + encodeQueryString(param))
+            .then(res => res.json())
+            .then(list => {
+                this.makeFeedList(list);
+            })
+            .catch(e => {
+                console.error(e);
+                this.hideLoading();
+            });
+    },
+    refreshSwipe: function () {
+        if (this.swiper !== null) { this.swiper = null; }
         this.swiper = new Swiper('.swiper', {
             navigation: {
                 nextEl: '.swiper-button-next',
@@ -17,22 +35,22 @@ const feedObj = {
         });
     },
     loadingElem: document.querySelector('.loading'),
-    containerElem: document.querySelector('#item_container'),     
-    getFeedCmtList: function(ifeed, divCmtList, spanMoreCmt) {
+    containerElem: document.querySelector('#item_container'),
+    getFeedCmtList: function (ifeed, divCmtList, spanMoreCmt) {
         fetch(`/feedcmt/index?ifeed=${ifeed}`)
-        .then(res => res.json())
-        .then(res => {
-            if(res && res.length > 0) {
-                if(spanMoreCmt) { spanMoreCmt.remove(); }
-                divCmtList.innerHTML = null;
-                res.forEach(item => {
-                    const divCmtItem = this.makeCmtItem(item);
-                    divCmtList.appendChild(divCmtItem);
-                });
-            }
-        });
+            .then(res => res.json())
+            .then(res => {
+                if (res && res.length > 0) {
+                    if (spanMoreCmt) { spanMoreCmt.remove(); }
+                    divCmtList.innerHTML = null;
+                    res.forEach(item => {
+                        const divCmtItem = this.makeCmtItem(item);
+                        divCmtList.appendChild(divCmtItem);
+                    });
+                }
+            });
     },
-    makeCmtItem: function(item) {
+    makeCmtItem: function (item) {
         const divCmtItemContainer = document.createElement('div');
         divCmtItemContainer.className = 'd-flex flex-row align-items-center mb-2';
         const src = '/static/img/profile/' + (item.writerimg ? `${item.iuser}/${item.writerimg}` : 'defaultProfileImg_100.png');
@@ -51,21 +69,21 @@ const feedObj = {
         });
         return divCmtItemContainer;
     },
-    makeFeedList: function(list) {
-        if(list.length !== 0) {
+    makeFeedList: function (list) {
+        if (list.length !== 0) {
             list.forEach(item => {
                 const divItem = this.makeFeedItem(item);
                 this.containerElem.appendChild(divItem);
             });
-        }        
+        }
         this.refreshSwipe();
         this.hideLoading();
     },
-    makeFeedItem: function(item) {
+    makeFeedItem: function (item) {
         console.log(item);
         const divContainer = document.createElement('div');
         divContainer.className = 'item mt-3 mb-3';
-        
+
         const divTop = document.createElement('div');
         divContainer.appendChild(divTop);
 
@@ -101,8 +119,8 @@ const feedObj = {
             <div class="swiper-button-next"></div>
         `;
         const divSwiperWrapper = divImgSwiper.querySelector('.swiper-wrapper');
-                    
-        item.imgList.forEach(function(imgObj) {
+
+        item.imgList.forEach(function (imgObj) {
             const divSwiperSlide = document.createElement('div');
             divSwiperWrapper.appendChild(divSwiperSlide);
             divSwiperSlide.classList.add('swiper-slide');
@@ -122,32 +140,32 @@ const feedObj = {
         heartIcon.className = 'fa-heart pointer rem1_5 me-3';
         heartIcon.classList.add(item.isFav === 1 ? 'fas' : 'far');
         heartIcon.addEventListener('click', e => {
-            
+
             let method = 'POST';
-            if(item.isFav === 1) { //delete (1은 0으로 바꿔줘야 함)
+            if (item.isFav === 1) { //delete (1은 0으로 바꿔줘야 함)
                 method = 'DELETE';
             }
 
             fetch(`/feed/fav/${item.ifeed}`, {
                 'method': method,
             }).then(res => res.json())
-            .then(res => {                    
-                if(res.result) {
-                    item.isFav = 1 - item.isFav; // 0 > 1, 1 > 0
-                    if(item.isFav === 0) { // 좋아요 취소
-                        heartIcon.classList.remove('fas');
-                        heartIcon.classList.add('far');
-                    } else { // 좋아요 처리
-                        heartIcon.classList.remove('far');
-                        heartIcon.classList.add('fas');
+                .then(res => {
+                    if (res.result) {
+                        item.isFav = 1 - item.isFav; // 0 > 1, 1 > 0
+                        if (item.isFav === 0) { // 좋아요 취소
+                            heartIcon.classList.remove('fas');
+                            heartIcon.classList.add('far');
+                        } else { // 좋아요 처리
+                            heartIcon.classList.remove('far');
+                            heartIcon.classList.add('fas');
+                        }
+                    } else {
+                        alert('좋아요를 할 수 없습니다.');
                     }
-                } else {
-                    alert('좋아요를 할 수 없습니다.');
-                }
-            })
-            .catch(e => {
-                alert('네트워크에 이상이 있습니다.');
-            });
+                })
+                .catch(e => {
+                    alert('네트워크에 이상이 있습니다.');
+                });
         });
 
 
@@ -164,9 +182,9 @@ const feedObj = {
         spanFavCnt.className = 'bold';
         spanFavCnt.innerHTML = `좋아요 ${item.favCnt}개`;
 
-        if(item.favCnt > 0) { divFav.classList.remove('d-none'); }
+        if (item.favCnt > 0) { divFav.classList.remove('d-none'); }
 
-        if(item.ctnt !== null && item.ctnt !== '') {
+        if (item.ctnt !== null && item.ctnt !== '') {
             const divCtnt = document.createElement('div');
             divContainer.appendChild(divCtnt);
             divCtnt.innerText = item.ctnt;
@@ -174,23 +192,23 @@ const feedObj = {
         }
 
         const divCmtList = document.createElement('div');
-        divContainer.appendChild(divCmtList);      
+        divContainer.appendChild(divCmtList);
         divCmtList.className = 'ms-3';
 
         const divCmt = document.createElement('div');
-        divContainer.appendChild(divCmt);  
+        divContainer.appendChild(divCmt);
 
         const spanMoreCmt = document.createElement('span');
 
-        if(item.cmt) {
+        if (item.cmt) {
             const divCmtItem = this.makeCmtItem(item.cmt);
             divCmtList.appendChild(divCmtItem);
-            
-            if(item.cmt.ismore === 1) {
+
+            if (item.cmt.ismore === 1) {
                 const divMoreCmt = document.createElement('div');
                 divCmt.appendChild(divMoreCmt);
                 divMoreCmt.className = 'ms-3 mb-3';
-                    
+
                 divMoreCmt.appendChild(spanMoreCmt);
                 spanMoreCmt.className = 'pointer rem0_9 c_lightgray';
                 spanMoreCmt.innerText = '댓글 더보기..';
@@ -198,20 +216,20 @@ const feedObj = {
                     this.getFeedCmtList(item.ifeed, divCmtList, spanMoreCmt);
                 });
             }
-        }        
-        
+        }
+
         const divCmtForm = document.createElement('div');
-        divCmtForm.className = 'd-flex flex-row';     
+        divCmtForm.className = 'd-flex flex-row';
         divCmt.appendChild(divCmtForm);
 
         divCmtForm.innerHTML = `
             <input type="text" class="flex-grow-1 my_input back_color p-2" placeholder="댓글을 입력하세요...">
             <button type="button" class="btn btn-outline-primary">등록</button>
         `;
-        
+
         const inputCmt = divCmtForm.querySelector('input');
         inputCmt.addEventListener('keyup', e => {
-            if(e.key === 'Enter') {
+            if (e.key === 'Enter') {
                 btnCmtReg.click();
             }
         });
@@ -225,20 +243,20 @@ const feedObj = {
                 method: 'POST',
                 body: JSON.stringify(param)
             })
-            .then(res => res.json())
-            .then(res => {            
-                if(res.result) {
-                    inputCmt.value = '';                    
-                    this.getFeedCmtList(param.ifeed, divCmtList, spanMoreCmt);
-                }
-            });
+                .then(res => res.json())
+                .then(res => {
+                    if (res.result) {
+                        inputCmt.value = '';
+                        this.getFeedCmtList(param.ifeed, divCmtList, spanMoreCmt);
+                    }
+                });
         });
 
         return divContainer;
     },
 
-    showLoading: function() { this.loadingElem.classList.remove('d-none'); },
-    hideLoading: function() { this.loadingElem.classList.add('d-none'); }
+    showLoading: function () { this.loadingElem.classList.remove('d-none'); },
+    hideLoading: function () { this.loadingElem.classList.add('d-none'); }
 
 }
 
@@ -248,17 +266,17 @@ function moveToFeedWin(iuser) {
 }
 
 
-(function() {
+(function () {
     const btnNewFeedModal = document.querySelector('#btnNewFeedModal');
-    if(btnNewFeedModal) {
+    if (btnNewFeedModal) {
         const modal = document.querySelector('#newFeedModal');
-        const body =  modal.querySelector('#id-modal-body');
+        const body = modal.querySelector('#id-modal-body');
         const frmElem = modal.querySelector('form');
         const btnClose = modal.querySelector('.btn-close');
         //이미지 값이 변하면
-        frmElem.imgs.addEventListener('change', function(e) {
+        frmElem.imgs.addEventListener('change', function (e) {
             console.log(`length: ${e.target.files.length}`);
-            if(e.target.files.length > 0) {
+            if (e.target.files.length > 0) {
                 body.innerHTML = `
                     <div>
                         <div class="d-flex flex-md-row">
@@ -278,16 +296,16 @@ function moveToFeedWin(iuser) {
                 const imgSource = e.target.files[0];
                 const reader = new FileReader();
                 reader.readAsDataURL(imgSource);
-                reader.onload = function() {
+                reader.onload = function () {
                     imgElem.src = reader.result;
                 };
 
                 const shareBtnElem = body.querySelector('button');
-                shareBtnElem.addEventListener('click', function() {
+                shareBtnElem.addEventListener('click', function () {
                     const files = frmElem.imgs.files;
 
                     const fData = new FormData();
-                    for(let i=0; i<files.length; i++) {
+                    for (let i = 0; i < files.length; i++) {
                         fData.append('imgs[]', files[i]);
                     }
                     fData.append('ctnt', body.querySelector('textarea').value);
@@ -295,32 +313,32 @@ function moveToFeedWin(iuser) {
 
                     fetch('/feed/rest', {
                         method: 'post',
-                        body: fData                       
+                        body: fData
                     }).then(res => res.json())
                         .then(myJson => {
-                        console.log(myJson);
+                            console.log(myJson);
 
-                        if(myJson) {                                
+                            if (myJson) {
                                 btnClose.click();
 
                                 // 화면에 등록!!!
                                 const lData = document.querySelector('#lData');
                                 const gData = document.querySelector('#gData');
-                                if(lData && lData.dataset.toiuser !== gData.dataset.loginiuser) { return; }
+                                if (lData && lData.dataset.toiuser !== gData.dataset.loginiuser) { return; }
                                 // 남의 feedWin이 아니라면 화면에 등록!!
-                        }
+                            }
                         });
-                        
+
                 });
             }
         });
 
-        btnNewFeedModal.addEventListener('click', function() {
+        btnNewFeedModal.addEventListener('click', function () {
             const selFromComBtn = document.createElement('button');
             selFromComBtn.type = 'button';
             selFromComBtn.className = 'btn btn-primary';
-            selFromComBtn.innerText = '컴퓨터에서 선택';            
-            selFromComBtn.addEventListener('click', function() {
+            selFromComBtn.innerText = '컴퓨터에서 선택';
+            selFromComBtn.addEventListener('click', function () {
                 frmElem.imgs.click();
             });
             body.innerHTML = null;
