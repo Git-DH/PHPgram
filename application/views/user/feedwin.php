@@ -72,5 +72,9 @@
                 <span class="pointer" id="btnProfileImgModalClose" data-bs-dismiss="modal">취소</span>
             </div>
         </div>
+
+        <form id="formProfile" class="d-none">
+            <input type="file" accept="image/*" name="imgs">
+        </form>
     </div>
 </div>

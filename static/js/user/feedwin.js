@@ -32,6 +32,8 @@ getFeedList();
     const lData = document.querySelector('#lData');
     const btnDelCurrentProfilePic = document.querySelector('#btnDelCurrentProfilePic');
     const btnProfileImgModalClose = document.querySelector('#btnProfileImgModalClose');
+    // const modal = document.querySelector('#changeProfileImgModal');
+    const inputFile = document.querySelector('#formProfile input'); 
     if(btnFollow) {
         btnFollow.addEventListener('click', function() {
             const param = {
@@ -89,12 +91,6 @@ getFeedList();
 
     if(btnDelCurrentProfilePic) {
         btnDelCurrentProfilePic.addEventListener('click', e => {
-
-        });
-    }
-
-    if(btnDelCurrentProfilePic) {
-        btnDelCurrentProfilePic.addEventListener('click', e => {
             fetch('/user/profile', {method: 'DELETE'})
             .then(res => res.json())
             .then(res => {
@@ -108,4 +104,37 @@ getFeedList();
             })
         })
     }
+
+    
+    const c_primaryButton = document.querySelector('.c_primary-button');
+    c_primaryButton.addEventListener('click', e => {
+        inputFile.click();
+    
+
+    inputFile.addEventListener('change', e => {
+        const files = inputFile.files[0]; // 사진 파일
+        const reader = new FileReader();
+                        reader.readAsDataURL(files);
+                        reader.onload = function () {
+                            const profileImgList = document.querySelectorAll('.profileimg');
+                            profileImgList.forEach(profileImg => {
+                            profileImg.src = reader.result;
+                            });
+                        };
+        console.log(files);
+        const fData = new FormData;
+        fData.append('img', files)
+        fetch('/user/profile', {
+            method: 'POST',
+            body: fData
+        })
+            .then(res => res.json())
+            .then(res => {
+                if(res.result) {
+                    console.log(res.result);
+                }
+                btnProfileImgModalClose.click();
+            })
+    })
+})
 })()
