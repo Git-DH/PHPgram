@@ -2,52 +2,46 @@
 <div class="d-flex flex-column align-items-center">
     <div class="size_box_100"></div>
     <div class="w100p_mw614">
-        <div class="d-flex flex-row">
-            <div class="d-flex flex-column justify-content-center">
-                <div class="circleimg h150 w150 pointer feedwin">
-                    <img class="profileimg" data-bs-toggle="modal" data-bs-target="#changeProfileImgModal" src='/static/img/profile/<?= $this->data->iuser ?>/<?= $this->data->mainimg ?>' onerror='this.error=null;this.src="/static/img/profile/defaultProfileImg_100.png"'>
+        <div class="d-flex flex-row">            
+            <div class="d-flex flex-column ps-3 pe-3 justify-content-center me-3">                
+                <div class="circleimg h150 w150 pointer feedwin">                    
+                    <img class="profileimg userProfileimg" data-bs-toggle="modal" data-bs-target="#changeProfileImgModal" src='/static/img/profile/<?=$this->data->iuser?>/<?=$this->data->mainimg?>' onerror='this.error=null;this.src="/static/img/profile/defaultProfileImg_100.png"'>
                 </div>
-            </div>
+            </div>            
             <div class="flex-grow-1 d-flex flex-column justify-content-evenly">
-                <div><?= $this->data->email ?>
-                    <?php /* if($this->data->iuser == getIuser()) { ?>
-                        <button type="button" id="btnModProfile" class="btn btn-outline-secondary">프로필 수정</button>
-                    <?php } else if($this->data->meyou === 0 && $this->data->youme === 1) { ?>
-                        <button type="button" id="btnFollow" datafollow="0" class="btn btn-primary">맞팔로우 하기</button>
-                <?php } else if($this->data->meyou === 0 && $this->data->youme === 0) { ?>
-                        <button type="button" id="btnFollow" datafollow="0" class="btn btn-primary">팔로우</button>
-                <?php } else { ?>
-                        <button type="button" id="btnFollow" datafollow="1" class="btn btn-outline-secondary">팔로우 취소</button>
-                <?php } */ ?>
-
+                <div class="d-flex align-items-center flex-row justify-content-between">
+                  <div class="feedUserEmail me-3">
+                  <?=$this->data->email?>
+                  </div>
                     <?php
-                    if ($this->data->iuser === getIuser()) {
-                        echo '<button type="button" id="btnModProfile" class="btn btn-outline-secondary">프로필 수정</button>';
-                    } else {
-                        $data_follow = 0;
-                        $cls = "btn-primary";
-                        $txt = "팔로우";
+                        if($this->data->iuser === getIuser()) {
+                            echo '<button type="button" id="btnModProfile" class="btn btn-outline-secondary">프로필 편집</button>';
+                        } else {                            
+                            $data_follow = 0;
+                            $cls = "btn-primary";
+                            $txt = "팔로우";
 
-                        if ($this->data->meyou === 1) {
-                            $data_follow = 1;
-                            $cls = "btn-outline-secondary";
-                            $txt = "팔로우 취소";
-                        } else if ($this->data->youme === 1 && $this->data->meyou === 0) {
-                            $txt = "맞팔로우 하기";
+                            if($this->data->meyou === 1) {
+                                $data_follow = 1;
+                                $cls = "btn-outline-secondary";
+                                $txt = "팔로우 취소";
+                            } else if($this->data->youme === 1 && $this->data->meyou === 0) {
+                                $txt = "맞팔로우 하기";
+                            }
+                            echo "<button type='button' id='btnFollow' data-youme='{$this->data->youme}' data-follow='{$data_follow}' class='btn {$cls}'>{$txt}</button>";
                         }
-                        echo "<button type='button' id='btnFollow' data-youme='{$this->data->youme}' data-follow='{$data_follow}' class='btn {$cls}'>{$txt}</button>";
-                    }
                     ?>
-
+                    <a href="#">
+                      <i class="fa-solid fa-gear rem1_5 black pe-3"></i>
+                    </a>
                 </div>
-
                 <div class="d-flex flex-row">
                     <div class="flex-grow-1 me-3">게시물 <span class="bold"><?=$this->data->feedcnt?></span></div>
-                    <div class="flex-grow-1 me-3">팔로워 <span class="bold" id="spanCntFollower"><?=$this->data->followerCnt?></span></div>
+                    <div class="flex-grow-1 divFollower me-3">팔로워 <span class="bold"><?=$this->data->followerCnt?></span></div>
                     <div class="flex-grow-1">팔로우 <span class="bold"><?=$this->data->followCnt?></span></div>
                 </div>
-
-                <div><?= $this->data->cmt ?></div>
+                <div class="bold"><?=$this->data->nm?></div>
+                <div><?=$this->data->cmt?></div>
             </div>
         </div>
         <div id="item_container"></div>
@@ -63,18 +57,17 @@
                 <h5 class="modal-title bold">프로필 사진 바꾸기</h5>
             </div>
             <div class="_modal_item">
-                <span class="c_primary-button bold pointer">사진 업로드</span>
+                <span id="btnUpdateCurrentProfilePic" class="c_primary-button bold pointer blue">사진 업로드</span>
             </div>
             <div class="_modal_item">
-                <span id="btnDelCurrentProfilePic" class="c_error-or-destructive bold pointer">현재 사진 삭제</span>
+                <span id="btnDelCurrentProfilePic"class="c_error-or-destructive bold pointer red">현재 사진 삭제</span>
             </div>
             <div class="_modal_item">
                 <span class="pointer" id="btnProfileImgModalClose" data-bs-dismiss="modal">취소</span>
             </div>
         </div>
-
-        <form id="formProfile" class="d-none">
-            <input type="file" accept="image/*" name="imgs">
-        </form>
     </div>
+    <form id="changeProfileForm" class="d-none">
+      <input type="file" accept="image/*" name="img" id="inputChangeProfile">
+    </form>
 </div>

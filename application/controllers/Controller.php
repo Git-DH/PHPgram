@@ -9,10 +9,10 @@ class Controller {
         "user/feedwin"
     ];
 
-    public function __construct($action, $model) {    
+    public function __construct($action, $model) {        
         if(!isset($_SESSION)) {
             session_start();
-        }    
+        }        
         $urlPaths = getUrl();
         foreach(static::$needLoginUrlArr as $url) {
             if(strpos( $urlPaths, $url) === 0 && !isset($_SESSION[_LOGINUSER]) ) {
@@ -63,4 +63,3 @@ class Controller {
         }
     }
 }
-

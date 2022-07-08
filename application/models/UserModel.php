@@ -6,9 +6,9 @@ use PDO;
 class UserModel extends Model {
     public function insUser(&$param) {
         $sql = "INSERT INTO t_user
-                ( email, pw, nm, ip_addr ) 
+                ( email, pw, nm , ip_addr) 
                 VALUES 
-                ( :email, :pw, :nm, :ip_addr )";
+                ( :email, :pw, :nm, :ip_addr)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":email", $param["email"]);
         $stmt->bindValue(":pw", $param["pw"]);
@@ -31,13 +31,13 @@ class UserModel extends Model {
         $feediuser = $param["feediuser"];
         $loginiuser = $param["loginiuser"];
         $sql = "SELECT iuser, email, nm, cmt, mainimg
-                    , (SELECT COUNT(ifeed) FROM t_feed WHERE iuser = {$feediuser}) AS feedcnt
-                    , (SELECT COUNT(toiuser) FROM t_user_follow WHERE toiuser = {$feediuser}) AS followerCnt
-                    , (SELECT COUNT(toiuser) FROM t_user_follow WHERE fromiuser = {$feediuser}) AS followCnt
-                    , (SELECT COUNT(fromiuser) FROM t_user_follow WHERE fromiuser = {$feediuser} AND toiuser = {$loginiuser}) AS youme
-                    , (SELECT COUNT(fromiuser) FROM t_user_follow WHERE fromiuser = {$loginiuser} AND toiuser = {$feediuser}) AS meyou
-                FROM t_user
-                WHERE iuser = {$feediuser}";      
+                , (SELECT COUNT(ifeed) FROM t_feed WHERE iuser = {$feediuser}) AS feedcnt
+                , (SELECT COUNT(toiuser) FROM t_user_follow WHERE toiuser = {$feediuser}) AS followerCnt
+                , (SELECT COUNT(toiuser) FROM t_user_follow WHERE fromiuser = {$feediuser}) AS followCnt
+                , (SELECT COUNT(fromiuser) FROM t_user_follow WHERE fromiuser = {$feediuser} AND toiuser = {$loginiuser}) AS youme
+              , (SELECT COUNT(fromiuser) FROM t_user_follow WHERE fromiuser = {$loginiuser} AND toiuser = {$feediuser}) AS meyou
+              FROM t_user
+              WHERE iuser = {$feediuser}";      
         $stmt = $this->pdo->prepare($sql);        
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_OBJ);
@@ -60,8 +60,8 @@ class UserModel extends Model {
 
     public function delUserFollow(&$param) {
         $sql = "DELETE FROM t_user_follow
-                WHERE fromiuser = :fromiuser
-                AND toiuser = :toiuser";
+                 WHERE fromiuser = :fromiuser
+                   AND toiuser = :toiuser";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":fromiuser", $param["fromiuser"]);
         $stmt->bindValue(":toiuser", $param["toiuser"]);

@@ -18,10 +18,14 @@ class FeedController extends Controller {
                     return [_RESULT => 0];
                 }
                 $iuser = getIuser();
+            $ip_addr = $_SERVER["REMOTE_ADDR"];
+
                 $param = [
                     "location" => $_POST["location"],
                     "ctnt" => $_POST["ctnt"],
-                    "iuser" => $iuser
+                    "iuser" => $iuser,
+                "ip_addr" => $ip_addr,
+
                 ];                
                 $ifeed = $this->model->insFeed($param);
 

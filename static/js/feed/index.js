@@ -1,5 +1,5 @@
-if(feedObj) {
-    feedObj.getFeedUrl = '/feed/rest';
-    feedObj.getFeedList();
-    feedObj.setScrollInfinity();
+if (feedObj) {
+  feedObj.getFeedUrl = '/feed/rest';
+  feedObj.getFeedList();
+  feedObj.setScrollInfinity();
 }
