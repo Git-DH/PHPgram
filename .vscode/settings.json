@@ -1,0 +1,6 @@
+{
+    "powermode.enabled": true,
+    "powermode.presets": "particles",
+    "powermode.shake.enabled": false,
+    "powermode.combo.counterSize": 1,
+}
