@@ -1,0 +1,17 @@
+{
+    "powermode.enabled": true,
+    "powermode.presets": "particles",
+    "powermode.shake.enabled": false,
+    "powermode.combo.counterSize": 1,
+
+    "indentRainbow.errorColor": "(128,32,32.6)",
+    "indentRainbow.indicatorStyle": "light",
+    "indentRainbow.lightIndicatorStyleLineWidth": 1,
+    "indentRainbow.colors": [
+        "rgba(255,255,64,0.3)",
+        "rgba(127,255,127,0.3)",
+        "rgba(255,127,255,0.3)",
+        "rgba(79,236,236,0.3)"
+    ],
+    "editor.guides.bracketPairs": "active",
+}

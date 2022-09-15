@@ -2,10 +2,10 @@
   function sendMsg(msg) {
     if (ws) {
       ws.send(JSON.stringify({ 
-                type: 'dm', 
-                idm: gIdm, 
-                iuser: loginiuser, 
-                toiuser: oppoiuser, 
+                type: 'dm',
+                idm: gIdm,
+                iuser: loginiuser,
+                toiuser: oppoiuser,
                 msg: msg }));
     }
   }
